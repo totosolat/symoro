@@ -28,7 +28,7 @@ def get_prog_config_path():
          A string specifying the path to store SYMORO settings.
     """
     prog_name = 'symoro'
-    if os.name is 'nt':
+    if os.name == 'nt':
         return os.path.join(os.environ['APPDATA'], prog_name)
     else:
         return os.path.join(os.environ['HOME'], '.config', prog_name)

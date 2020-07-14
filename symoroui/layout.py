@@ -121,13 +121,13 @@ class MainFrame(wx.Frame):
             place = elements[key].place
             handler = getattr(self, elements[key].handler)
             field_id = int(elements[key].id)
-            if control is 'cmb':
+            if control == 'cmb':
                 ctrl = wx.ComboBox(
                     parent=self.panel, style=wx.CB_READONLY,
                     size=(width, -1), name=name
                 )
                 ctrl.Bind(wx.EVT_COMBOBOX, handler)
-            elif control is 'lbl':
+            elif control == 'lbl':
                 ctrl = wx.StaticText(
                     parent=self.panel, size=(width, -1), name=name
                 )

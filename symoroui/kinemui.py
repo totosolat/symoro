@@ -232,6 +232,8 @@ class DialogDeterminant(wx.Dialog):
         self.cmb_proj.SetSelection(0)
         grid.Add(self.cmb_proj, pos=(3, 0), span=(1, 2),
                  flag=wx.ALIGN_CENTER_HORIZONTAL | wx.BOTTOM, border=15)
+        choices = [str(i) for i in range(1,self.robo.NF)]
+        print(range(1,self.robo.NF))#TODO
         label = wx.StaticText(self, label='Intermediate frame ( i )')
         grid.Add(label, pos=(4, 0), span=(1, 2),
                  flag=wx.ALIGN_CENTER_HORIZONTAL | wx.ALL)
@@ -273,7 +275,8 @@ class DialogDeterminant(wx.Dialog):
     def OnFrameChanged(self, _):
         chain = self.robo.chain(int(self.cmb_frame.Value))
         choices = [str(i) for i in reversed(chain + [0])]
-        self.cmb_inter.SetItems(choices)
+        choices_inter = [str(i) for i in range(1,self.robo.NF)]
+        self.cmb_inter.SetItems(choices_inter)
         self.cmb_inter.SetSelection(0)
         self.cmb_proj.SetItems(choices)
         self.cmb_proj.SetSelection(0)

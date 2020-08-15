@@ -2,7 +2,7 @@ on a fresh ubuntu 14.04 install:
 
 sudo apt install python-setuptools
 sudo apt install python-pip
-sudo pip install https://github.com/sympy/sympy/archive/sympy-0.7.3.zip
+sudo pip install sympy==0.7.6
 sudo appt install python-dev
 sudo pip install numpy==1.6.1
 sudo apt install python-wxgtk2.8 (pythron-wxgtk3.0 also tested)

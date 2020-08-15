@@ -132,10 +132,10 @@ def get_coeffs(sym, var_list):
     coeffs = []
     for x in var_list:
         sym, c = factorize(sym, x)
-        print
-        print x
-        print sym
-        print c
+        #print
+        #print x
+        #print sym
+        #print c
         coeffs.append(c)
     coeffs.append(sym)
     return coeffs

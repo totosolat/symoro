@@ -19,18 +19,16 @@ from collections import OrderedDict
 import wx
 
 from pysymoro.robot import Robot
-from pysymoro import geometry
-from pysymoro import kinematics
-from pysymoro import invgeom
-from pysymoro import pieper
+#from pysymoro import geometry
+#from pysymoro import kinematics
+#from pysymoro import pieper  # verify pieper
 from symoroutils import configfile
 from symoroutils import filemgr
 from symoroutils import parfile
 from symoroutils import samplerobots
 from symoroutils import tools
 from symoroui import definition as ui_definition
-from symoroui import geometry as ui_geometry
-from symoroui import kinematics as ui_kinematics
+from symoroui import geomui, kinemui, dynui
 from symoroui import labels as ui_labels
 from symoroviz import graphics
 
@@ -59,7 +57,7 @@ class MainFrame(wx.Frame):
         # load robot
         self.robo = self.load_robot()
         # update fields with data
-        self.feed_data(defaults=False)
+        self.feed_data()
         # configure status bar
         self.statusbar.SetFieldsCount(number=2)
         self.statusbar.SetStatusWidths(widths=[-1, -1])
@@ -276,7 +274,7 @@ class MainFrame(wx.Frame):
             ), proportion=0,
             flag=wx.ALL | wx.ALIGN_LEFT, border=5
         )
-        szr_link.AddSpacer((4,4))
+        szr_link.AddSpacer((4, 4))
         szr_link.Add(cmb_link, flag=wx.ALL | wx.ALIGN_RIGHT)
         szr_dyn_params.Add(szr_link, flag=wx.ALL | wx.ALIGN_CENTER)
         szr_grd_dyn = wx.GridBagSizer(0, 0)
@@ -316,7 +314,8 @@ class MainFrame(wx.Frame):
             szr_grd_joint_velacc, elements=ui_labels.JOINT_PARAMS,
             rows=3, cols=2, width=75,
         )
-        szr_joint_velacc.Add(szr_grd_joint_velacc,
+        szr_joint_velacc.Add(
+            szr_grd_joint_velacc,
             flag=wx.ALL | wx.ALIGN_CENTER, border=2
         )
         szr_velacc.Add(szr_joint_velacc, 1, wx.ALL | wx.EXPAND, 0)
@@ -326,7 +325,8 @@ class MainFrame(wx.Frame):
     def Change(self, index, name, event_object):
         prev_value = str(self.robo.get_val(index, name))
         if event_object.Value != prev_value:
-            if self.robo.put_val(index, name, event_object.Value) == tools.FAIL:
+            flag = self.robo.put_val(index, name, event_object.Value)
+            if flag == tools.FAIL:
                 message = "Unacceptable value '%s' has been input in %s%s" \
                           % (event_object.Value, name, index)
                 self.message_error(message)
@@ -340,6 +340,9 @@ class MainFrame(wx.Frame):
         if event.EventObject.Name == 'ant':
             self.widgets['type'].SetLabel(self.robo.structure)
         if event.EventObject.Name == 'sigma':
+            self.robo.reset_joint(frame_index)
+            self.robo.reset_geom(frame_index)
+            self.update_joint_params()
             self.update_geo_params()
 
     def OnDynParamChanged(self, event):
@@ -365,37 +368,32 @@ class MainFrame(wx.Frame):
         frame_index = int(event.EventObject.Value)
         cmb = self.widgets['ant']
         cmb.SetItems([str(i) for i in range(frame_index)])
-        self.update_geo_params(defaults=False)
+        self.update_geo_params()
 
     def OnLinkChanged(self, event):
         self.update_dyn_params()
 
     def OnJointChanged(self, event):
-        self.update_joint_params(defaults=False)
+        self.update_joint_params()
 
     def update_params(self, index, pars):
         for par in pars:
             widget = self.widgets[par]
             widget.ChangeValue(str(self.robo.get_val(index, par)))
 
-    def update_geo_params(self, defaults=True):
-        if defaults:
-            self.robo.set_defaults(joint=True, geom=True)
+    def update_geo_params(self):
         pars = self._extract_param_names(ui_labels.GEOM_PARAMS)
         index = int(self.widgets['frame'].Value)
         for par in pars[0:3]:
             self.widgets[par].SetValue(str(self.robo.get_val(index, par)))
         self.update_params(index, pars[3:])
-        self.update_joint_params(defaults=defaults)
 
     def update_dyn_params(self):
         pars = self._extract_param_names(ui_labels.DYN_PARAMS)
         index = int(self.widgets['link'].Value)
         self.update_params(index, pars)
 
-    def update_joint_params(self, defaults=True):
-        if defaults:
-            self.robo.set_defaults(joint=True)
+    def update_joint_params(self):
         pars = self._extract_param_names(ui_labels.JOINT_PARAMS)
         index = int(self.widgets['joint'].Value)
         self.widgets[pars[0]].SetValue(
@@ -405,7 +403,7 @@ class MainFrame(wx.Frame):
 
     def update_base_twist_params(self):
         pars = dict(
-            ui_labels.BASE_VEL_ACC.items() + \
+            ui_labels.BASE_VEL_ACC.items() +
             ui_labels.GRAVITY_CMPNTS.items()
         )
         for key in pars:
@@ -424,11 +422,12 @@ class MainFrame(wx.Frame):
     def _extract_param_names(self, params):
         names = list()
         for key in params:
-            if key in ['frame', 'link', 'joint']: continue
+            if key in ['frame', 'link', 'joint']:
+                continue
             names.append(params[key].name)
         return names
 
-    def feed_data(self, defaults=True):
+    def feed_data(self):
         # Robot Type
         names = [
             ('name', self.robo.name), ('NF', self.robo.nf),
@@ -457,15 +456,16 @@ class MainFrame(wx.Frame):
             cmb = self.widgets[name]
             cmb.SetItems(lst)
             cmb.SetSelection(0)
-        self.update_geo_params(defaults=defaults)
+        self.update_geo_params()
         self.update_dyn_params()
-        self.update_joint_params(defaults=defaults)
+        self.update_joint_params()
         self.update_base_twist_params()
         self.update_z_params()
         self.update_menu()
         self.changed = False
         self.par_dict = {}
 
+    #TODO: rewrite the way to find a menu item
     def update_menu(self):
         """Update menu items"""
         # get menu bar
@@ -489,8 +489,7 @@ class MainFrame(wx.Frame):
         idx = len(iden_menu.GetMenuItems()) - 1
         m_base_inertial_params = iden_menu.FindItemByPosition(idx)
         # set direct dynamic model status
-        if self.robo.is_mobile or \
-            (self.robo.structure is tools.CLOSED_LOOP):
+        if self.robo.is_mobile or (self.robo.structure is tools.CLOSED_LOOP):
             ddym_enable = False
         else:
             ddym_enable = True
@@ -768,7 +767,9 @@ class MainFrame(wx.Frame):
                 is_floating=result['is_floating'],
                 is_mobile=result['is_mobile']
             )
-            new_robo.set_defaults(base=True)
+            new_robo.set_base_defaults()
+            new_robo.set_joint_defaults()
+            new_robo.set_geom_defaults()
             if result['keep_geo']:
                 nf = min(self.robo.NF, new_robo.NF)
                 new_robo.ant[:nf] = self.robo.ant[:nf]
@@ -804,7 +805,6 @@ class MainFrame(wx.Frame):
                 new_robo.v0 = self.robo.v0
                 new_robo.vdot0 = self.robo.vdot0
                 new_robo.G = self.robo.G
-            new_robo.set_defaults(joint=True)
             self.robo = new_robo
             self.robo.directory = filemgr.get_folder_path(self.robo.name)
             self.feed_data()
@@ -842,7 +842,7 @@ class MainFrame(wx.Frame):
                         "While reading file an error occured."
                     )
                 self.robo = new_robo
-                self.feed_data(defaults=False)
+                self.feed_data()
 
     def OnSave(self, event):
         parfile.writepar(self.robo)
@@ -857,8 +857,7 @@ class MainFrame(wx.Frame):
             message="Enter a name for the new robot:",
             style=wx.OK | wx.CANCEL
         )
-        if txtdlg.ShowModal() == wx.ID_OK and \
-            str(txtdlg.GetValue()).strip():
+        if txtdlg.ShowModal() == wx.ID_OK and str(txtdlg.GetValue()).strip():
             # when OK button and user input isn't an empty string
             # save as new robot
             self.robo.name = str(txtdlg.GetValue()).strip()
@@ -899,128 +898,106 @@ class MainFrame(wx.Frame):
                 self.message_info(result_msg)
 
     def OnTransformationMatrix(self, event):
-        dialog = ui_geometry.DialogTrans(
-            ui_labels.MAIN_WIN['prog_name'], self.robo.NF
+        dialog = geomui.DialogTrans(
+            ui_labels.MAIN_WIN['prog_name'], self.robo
         )
         if dialog.ShowModal() == wx.ID_OK:
-            frames, trig_subs = dialog.GetValues()
-            model_symo = geometry.direct_geometric(
-                self.robo, frames, trig_subs
-            )
-            out_file_path = self.prompt_file_save(model_symo)
-            self.model_success(out_file_path)
+            model_symo = dialog.GetValues()
+            self.prompt_file_save(model_symo)
         dialog.Destroy()
 
     def OnFastGeometricModel(self, event):
-        dialog = ui_geometry.DialogFast(
-            ui_labels.MAIN_WIN['prog_name'], self.robo.NF
+        dialog = geomui.DialogFast(
+            ui_labels.MAIN_WIN['prog_name'], self.robo
         )
         if dialog.ShowModal() == wx.ID_OK:
-            i, j = dialog.GetValues()
-            model_symo = geometry.direct_geometric_fast(self.robo, i, j)
-            out_file_path = self.prompt_file_save(model_symo)
-            self.model_success(out_file_path)
+            model_symo = dialog.GetValues()
+            self.prompt_file_save(model_symo)
         dialog.Destroy()
 
     def OnIgmPaul(self, event):
-        dialog = ui_geometry.DialogPaul(
+        dialog = geomui.DialogPaul(
             ui_labels.MAIN_WIN['prog_name'],
-            self.robo.endeffectors,
-            str(invgeom.EMPTY)
+            self.robo,
         )
         if dialog.ShowModal() == wx.ID_OK:
-            lst_T, n = dialog.get_values()
-            model_symo = invgeom.igm_paul(self.robo, lst_T, n)
-            out_file_path = self.prompt_file_save(model_symo)
-            self.model_success(out_file_path)
+            model_symo = dialog.GetValues()
+            self.prompt_file_save(model_symo)
         dialog.Destroy()
 
     def OnIgmPieper(self, event):
-        dialog = ui_geometry.DialogPieper(
+        dialog = geomui.DialogPieper(
             ui_labels.MAIN_WIN['prog_name'],
-            self.robo.endeffectors,
-            str(invgeom.EMPTY)
+            self.robo,
         )
         if dialog.ShowModal() == wx.ID_OK:
-            lst_T, n = dialog.get_values()
-            model_symo = pieper.igm_pieper(self.robo, lst_T, n)
-            out_file_path = self.prompt_file_save(model_symo)
-            self.model_success(out_file_path)
+            model_symo = dialog.GetValues()
+            self.prompt_file_save(model_symo)
         dialog.Destroy()
+        pass
 
+#TODO: implement
     def OnConstraintGeoEq(self, event):
         pass
 
     def OnJacobianMatrix(self, event):
-        dialog = ui_kinematics.DialogJacobian(
+        dialog = kinemui.DialogJacobian(
             ui_labels.MAIN_WIN['prog_name'], self.robo
         )
         if dialog.ShowModal() == wx.ID_OK:
-            n, i, j = dialog.get_values()
-            model_symo = kinematics.jacobian(self.robo, n, i, j)
-            out_file_path = self.prompt_file_save(model_symo)
-            self.model_success(out_file_path)
+            model_symo = dialog.symo
+            self.prompt_file_save(model_symo)
+           # self.model_success(out_file_path)
         dialog.Destroy()
 
     def OnDeterminant(self, event):
-        dialog = ui_kinematics.DialogDeterminant(
+        dialog = kinemui.DialogDeterminant(
             ui_labels.MAIN_WIN['prog_name'], self.robo
         )
         if dialog.ShowModal() == wx.ID_OK:
-            model_symo = kinematics.jacobian_determinant(
-                self.robo, *dialog.get_values()
-            )
-            out_file_path = self.prompt_file_save(model_symo)
-            self.model_success(out_file_path)
+            model_symo = dialog.symo
+            self.prompt_file_save(model_symo)
+            #self.model_success(out_file_path)
         dialog.Destroy()
 
     def OnCkel(self, event):
-        model_symo = kinematics.kinematic_constraints(self.robo)
+        model_symo = kinemui.kinematic_constraints(self.robo)
         if model_symo == tools.FAIL:
             self.message_warning("There are no loops")
         else:
-            out_file_path = self.prompt_file_save(model_symo)
-            self.model_success(out_file_path)
+            self.prompt_file_save(model_symo)
 
     def OnVelocities(self, event):
-        model_symo = kinematics.velocities(self.robo)
-        out_file_path = self.prompt_file_save(model_symo)
-        self.model_success(out_file_path)
+        model_symo = kinemui.velocities(self.robo)
+        self.prompt_file_save(model_symo)
 
     def OnAccelerations(self, event):
-        model_symo = kinematics.accelerations(self.robo)
-        out_file_path = self.prompt_file_save(model_symo)
-        self.model_success(out_file_path)
+        model_symo = kinemui.accelerations(self.robo)
+        self.prompt_file_save(model_symo)
 
     def OnJpqp(self, event):
-        model_symo = kinematics.jdot_qdot(self.robo)
-        out_file_path = self.prompt_file_save(model_symo)
-        self.model_success(out_file_path)
+        model_symo = kinemui.jdot_qdot(self.robo)
+        self.prompt_file_save(model_symo)
 
     def OnInverseDynamic(self, event):
-        model_symo = self.robo.compute_idym()
-        out_file_path = self.prompt_file_save(model_symo)
-        self.model_success(out_file_path)
+        model_symo = dynui.compute_idym(self.robo)
+        self.prompt_file_save(model_symo)
 
     def OnInertiaMatrix(self, event):
-        model_symo = self.robo.compute_inertiamatrix()
-        out_file_path = self.prompt_file_save(model_symo)
-        self.model_success(out_file_path)
+        model_symo = dynui.compute_inertiamatrix(self.robo)
+        self.prompt_file_save(model_symo)
 
     def OnCentrCoriolGravTorq(self, event):
-        model_symo = self.robo.compute_pseudotorques()
-        out_file_path = self.prompt_file_save(model_symo)
-        self.model_success(out_file_path)
+        model_symo = dynui.compute_pseudotorques(self.robo)
+        self.prompt_file_save(model_symo)
 
     def OnDirectDynamicModel(self, event):
-        model_symo = self.robo.compute_ddym()
-        out_file_path = self.prompt_file_save(model_symo)
-        self.model_success(out_file_path)
+        model_symo = dynui.compute_ddym(self.robo)
+        self.prompt_file_save(model_symo)
 
     def OnBaseInertialParams(self, event):
-        model_symo, base_robo = self.robo.compute_baseparams()
-        out_file_path = self.prompt_file_save(model_symo)
-        self.model_success(out_file_path)
+        model_symo, base_robo = dynui.compute_baseparams(self.robo)
+        self.prompt_file_save(model_symo)
         parfile.writepar(base_robo)
         msg = ("A new robot with the Base Inertial Parameters was\n")
         msg = msg + ("created and the corresponding PAR file is ")
@@ -1029,9 +1006,8 @@ class MainFrame(wx.Frame):
         self.message_info(msg)
 
     def OnDynIdentifModel(self, event):
-        model_symo = self.robo.compute_dynidenmodel()
-        out_file_path = self.prompt_file_save(model_symo)
-        self.model_success(out_file_path)
+        model_symo = dynui.compute_dynidenmodel(self.robo)
+        self.prompt_file_save(model_symo)
 
     def OnVisualisation(self, event):
         dialog = ui_definition.DialogVisualisation(

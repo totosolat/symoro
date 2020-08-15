@@ -1,0 +1,11 @@
+on a fresh ubuntu 14.04 install:
+
+sudo apt install python-setuptools
+sudo apt install python-pip
+sudo pip install https://github.com/sympy/sympy/archive/sympy-0.7.3.zip
+sudo appt install python-dev
+sudo pip install numpy==1.6.1
+sudo apt install python-wxgtk2.8 (pythron-wxgtk3.0 also tested)
+sudo pip install PyOpenGL==3.0.1b2
+
+run with ./launch.sh

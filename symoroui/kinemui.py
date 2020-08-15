@@ -158,6 +158,7 @@ class DialogJacobian(wx.Dialog):
                                     choices=choices, style=wx.CB_READONLY)
         self.cmb_proj.SetSelection(0)
         sizer.Add(self.cmb_proj, 0, wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 10)
+        choices = [str(i) for i in range(1,self.robo.NF)]
         label = wx.StaticText(self, label='Intermediate frame ( j )')
         sizer.Add(label, 0, wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 2)
         self.cmb_inter = wx.ComboBox(self, size=(60, -1),

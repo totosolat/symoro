@@ -92,7 +92,7 @@ def jacobian_determinant(robo, n, i, j, rows, cols):
             J_reduced[i, j] = J[i_old, j_old]
     symo.file_open(robo, 'det')
     symo.write_params_table(robo, 'Jacobian determinant for frame %s' % n)
-    symo.write_line(kinematics._jac_det(robo, symo, J=J_reduced))
+    symo.write_line(kinematics._jac_det(robo, symo, J=J_reduced))# TODO remove verbose
     symo.file_close()
     return symo
 
@@ -233,7 +233,6 @@ class DialogDeterminant(wx.Dialog):
         grid.Add(self.cmb_proj, pos=(3, 0), span=(1, 2),
                  flag=wx.ALIGN_CENTER_HORIZONTAL | wx.BOTTOM, border=15)
         choices = [str(i) for i in range(1,self.robo.NF)]
-        print(range(1,self.robo.NF))#TODO
         label = wx.StaticText(self, label='Intermediate frame ( i )')
         grid.Add(label, pos=(4, 0), span=(1, 2),
                  flag=wx.ALIGN_CENTER_HORIZONTAL | wx.ALL)

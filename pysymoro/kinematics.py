@@ -152,16 +152,16 @@ def _jac_det(robo, symo, n=1, i=1, j=1, J=None):
         J, L = _jac(robo, symo, n, i, j)
     if not J.is_square:
         J = _make_square(J)
-    print J
+    #print J
     det = J.det()
-    print det
-    print
+    #print det
+    #print
     det = simplify(det, C2S2=True)
-    print det
-    print
+    #print det
+    #print
     det = factor(det)
-    print det
-    print
+    #print det
+    #print
     return det
 
 

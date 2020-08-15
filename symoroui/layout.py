@@ -152,7 +152,7 @@ class MainFrame(wx.Frame):
         szr_right_col = wx.BoxSizer(wx.VERTICAL)
         szr_robot_des.Add(szr_left_col, 0, wx.ALL | wx.EXPAND, 5)
         szr_robot_des.Add(szr_right_col, 0, wx.ALL | wx.EXPAND, 5)
-        self.szr_topmost.Add(szr_robot_des, 0, wx.ALL, 10)
+        self.szr_topmost.Add(szr_robot_des, 0, wx.ALL, 15)
         # left col - robot type box
         szr_robot_type = wx.StaticBoxSizer(
             wx.StaticBox(
@@ -235,7 +235,7 @@ class MainFrame(wx.Frame):
                 lbl_last_row, pos=(4, i+1),
                 flag=wx.ALIGN_LEFT, border=3
             )
-        szr_location.Add(szr_grd_loc, 0, wx.ALL | wx.EXPAND, 5)
+        szr_location.Add(szr_grd_loc, 0, wx.ALL | wx.EXPAND, 35)
         szr_left_col.Add(szr_location, 0, wx.ALL | wx.EXPAND, 0)
         # right col - geometric params box
         szr_geom_params = wx.StaticBoxSizer(

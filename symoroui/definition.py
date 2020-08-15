@@ -46,7 +46,7 @@ class DialogDefinition(wx.Dialog):
             pos=(0, 0), flag=wx.BOTTOM | wx.ALIGN_LEFT, border=2
         )
         szr_grd.Add(
-            wx.TextCtrl(self, size=(92, -1),
+            wx.TextCtrl(self, size=(105, -1), #(92, -1)
             name='name', value=name), pos=(0, 1)
         )
         szr_grd.Add(
@@ -55,7 +55,7 @@ class DialogDefinition(wx.Dialog):
             border=2
         )
         self.spin_links = wx.SpinCtrl(
-            self, size=(92, -1), value=str(nl), min=1
+            self, size=(105, -1), value=str(nl), min=1
         )
         self.spin_links.Bind(wx.EVT_SPINCTRL, self.OnSpinNL)
         szr_grd.Add(self.spin_links, pos=(1, 1))
@@ -64,7 +64,7 @@ class DialogDefinition(wx.Dialog):
             flag=wx.BOTTOM | wx.TOP | wx.ALIGN_LEFT, border=2
         )
         self.spin_joints = wx.SpinCtrl(
-            self, size=(92, -1), value=str(nj), min=0
+            self, size=(105, -1), value=str(nj), min=0
         )
         szr_grd.Add(self.spin_joints, pos=(2, 1))
         szr_grd.Add(
@@ -72,7 +72,7 @@ class DialogDefinition(wx.Dialog):
             flag=wx.BOTTOM | wx.TOP | wx.ALIGN_LEFT, border=2
         )
         self.cmb_structure = wx.ComboBox(
-            self, size=(92, -1), name='structure', style=wx.CB_READONLY,
+            self, size=(105, -1), name='structure', style=wx.CB_READONLY,
             choices=[tools.SIMPLE, tools.TREE, tools.CLOSED_LOOP],
             value=structure
         )

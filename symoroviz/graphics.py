@@ -485,7 +485,7 @@ class MainWindow(wx.Frame):
             self, robo, self.params_dict, size=(600, 600)
         )
         self.p = wx.lib.scrolledpanel.ScrolledPanel(self, -1)
-        self.p.SetMinSize((350, 650))
+        self.p.SetMinSize((430, 650))
         self.init_ui()
         self.p.SetupScrolling()
         self.update_spin_controls()
@@ -586,7 +586,7 @@ class MainWindow(wx.Frame):
                 pos=(p_index, 0), flag=wx.ALIGN_CENTER_VERTICAL
             )
             fsn_qvar = FS.FloatSpin(
-                self.p, size=(70, -1), id=jnt.index, increment=0.05,
+                self.p, size=(120, -1), id=jnt.index, increment=0.05,
                 min_val=-10., max_val=10.0
             )
             fsn_qvar.Bind(FS.EVT_FLOATSPIN, self.OnSetJointVar)

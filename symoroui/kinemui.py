@@ -145,7 +145,7 @@ class DialogJacobian(wx.Dialog):
         choices = [str(i) for i in range(self.robo.NF)]
         label = wx.StaticText(self, label='Frame number ( r )')
         sizer.Add(label, 0, wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 2)
-        self.cmb_frame = wx.ComboBox(self, size=(50, -1),
+        self.cmb_frame = wx.ComboBox(self, size=(60, -1),
                                      choices=choices, style=wx.CB_READONLY)
         self.cmb_frame.SetSelection(len(choices)-1)
         self.cmb_frame.Bind(wx.EVT_COMBOBOX, self.OnFrameChanged)
@@ -154,13 +154,13 @@ class DialogJacobian(wx.Dialog):
         choices = [str(i) for i in reversed(chain + [0])]
         label = wx.StaticText(self, label='Projection frame ( i )')
         sizer.Add(label, 0, wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 2)
-        self.cmb_proj = wx.ComboBox(self, size=(50, -1),
+        self.cmb_proj = wx.ComboBox(self, size=(60, -1),
                                     choices=choices, style=wx.CB_READONLY)
         self.cmb_proj.SetSelection(0)
         sizer.Add(self.cmb_proj, 0, wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 10)
         label = wx.StaticText(self, label='Intermediate frame ( j )')
         sizer.Add(label, 0, wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 2)
-        self.cmb_inter = wx.ComboBox(self, size=(50, -1),
+        self.cmb_inter = wx.ComboBox(self, size=(60, -1),
                                      choices=choices, style=wx.CB_READONLY)
         self.cmb_inter.SetSelection(0)
         sizer.Add(self.cmb_inter, 0, wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 10)
@@ -214,7 +214,7 @@ class DialogDeterminant(wx.Dialog):
         label = wx.StaticText(self, label='Frame number ( r )')
         grid.Add(label, pos=(0, 0), span=(1, 2),
                  flag=wx.ALIGN_CENTER_HORIZONTAL | wx.ALL)
-        self.cmb_frame = wx.ComboBox(self, size=(50, -1),
+        self.cmb_frame = wx.ComboBox(self, size=(60, -1),
                                      choices=choices, style=wx.CB_READONLY)
         self.cmb_frame.SetSelection(len(choices)-1)
         self.cmb_frame.Bind(wx.EVT_COMBOBOX, self.OnFrameChanged)
@@ -225,7 +225,7 @@ class DialogDeterminant(wx.Dialog):
         label = wx.StaticText(self, label='Projection frame ( j )')
         grid.Add(label, pos=(2, 0), span=(1, 2),
                  flag=wx.ALIGN_CENTER_HORIZONTAL | wx.ALL)
-        self.cmb_proj = wx.ComboBox(self, size=(50, -1),
+        self.cmb_proj = wx.ComboBox(self, size=(60, -1),
                                     choices=choices, style=wx.CB_READONLY)
         self.cmb_proj.SetSelection(len(choices)-1)
         self.cmb_proj.SetSelection(0)
@@ -234,7 +234,7 @@ class DialogDeterminant(wx.Dialog):
         label = wx.StaticText(self, label='Intermediate frame ( i )')
         grid.Add(label, pos=(4, 0), span=(1, 2),
                  flag=wx.ALIGN_CENTER_HORIZONTAL | wx.ALL)
-        self.cmb_inter = wx.ComboBox(self, size=(50, -1),
+        self.cmb_inter = wx.ComboBox(self, size=(60, -1),
                                      choices=choices, style=wx.CB_READONLY)
         self.cmb_inter.SetSelection(0)
         grid.Add(self.cmb_inter, pos=(5, 0), span=(1, 2),

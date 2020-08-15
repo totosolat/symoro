@@ -199,13 +199,13 @@ class DialogFast(wx.Dialog):
         grid.Add(lab_left, pos=(0, 0), flag=wx.ALIGN_CENTER_HORIZONTAL)
         grid.Add(lab_right, pos=(0, 1), flag=wx.ALIGN_CENTER_HORIZONTAL)
         self.cmb_i = wx.ComboBox(
-            self, size=(50, -1),
+            self, size=(60, -1),
             choices=[str(i) for i in range(self.robo.NF)],
             style=wx.CB_READONLY
         )
         self.cmb_i.SetSelection(0)
         self.cmb_j = wx.ComboBox(
-            self, size=(50, -1),
+            self, size=(60, -1),
             choices=[str(i) for i in range(self.robo.NF)],
             style=wx.CB_READONLY
         )

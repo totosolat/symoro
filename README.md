@@ -1,3 +1,5 @@
+This is a fork of original SYMORO repository. As the oiginal repository does not seems to be maintained anymore, this one offers minimal maintenance and will try to deal with bug fixes and pull requests.
+
 SYMORO
 ======
 
@@ -10,37 +12,43 @@ Khalil.
 For details on the algorithms used, please see [the paper][lk:hal]
 published in the AIM 2014 conference.
 
-
 Requirements
 ------------
-+ python (>= 2.7, &nbsp;&nbsp; 3.* is not supported)
+
+NOT TESTED WITH ALL VERSIONS OF DEPENDENCIES. You should stick to the lower required version to avoid issues.
+
++ python (>= 2.7) For python 3 version, choose the branch python3 forked from https://github.com/cmigliorini/symoro
 + sympy (>= 0.7.6)
 + numpy (>= 1.6.1)
-+ wxPython (>= 2.8.12)
++ wxPython (>= 2.8.12) NOT COMPATIBLE WITH >=4.0.0 
 + PyOpenGL (>= 3.0.1b2)
 
 
 Getting Started
 ---------------
-+ For setting up SYMORO, see [Setup][lk:setup].
-+ If you have any queries, contact [Aravind][el:aravind].
++ Install on windows: have a look at [Setup][lk:setup] but does not seem to work first try.
+
++ Install on ubuntu (tested 14.04 and 20.04):
+
+  `sudo apt install python-setuptools`
+  `sudo apt install python-pip`
+  `sudo pip install sympy==0.7.6`
+  `sudo appt install python-dev`
+  `sudo pip install numpy==1.6.1`
+  `sudo apt install python-wxgtk2.8 #(pythron-wxgtk3.0 also tested)`
+  `sudo pip install PyOpenGL==3.0.1b2straight away`
+
+  
 
 
 Licence
 -------
 See [LICENCE][lk:licence].
 
+# Known issues
 
-Contributors
-------------
-See [Contributors][lk:contributors].
+- [Setup][lk:setup] from setup.py fails on ubuntu and windows. Major issue apparently comes from wxPython install
 
-
-[lk:irccyn]: http://www.irccyn.ec-nantes.fr/
-[lk:hal]: http://hal.archives-ouvertes.fr/hal-01025919
-[lk:setup]: https://github.com/symoro/symoro/wiki/Setup
-[el:aravind]: mailto:aravind.v@tum-create.edu.sg
-[lk:licence]: https://github.com/symoro/symoro/blob/master/LICENCE
-[lk:contributors]: https://github.com/symoro/symoro/graphs/contributors
-
+- Jacobian and Jacobian determinant computation fails if intermediate frame == 0. 
+- IGM - Pieper method fails
 

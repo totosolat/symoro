@@ -390,7 +390,7 @@ class Solver:
                     return False
                 _solve_type_3(self.symo, coeffs, th)
                 self.unknown_th.remove(th)
-                print "TYPE 3"
+                #print "TYPE 3"
                 return True
         elif len(ths) == 1 and len(rs) == 1:
             th, = ths
@@ -402,7 +402,7 @@ class Solver:
                 _solve_type_4(self.symo, coeffs, th, r)
                 self.unknown_th.remove(th)
                 self.unknown_r.remove(r)
-                print "TYPE 4"
+                #print "TYPE 4"
                 return True
             coeffs = self.patt[5].match(eq1, eq2, th1=th, r=r)
             if not coeffs:  # try the other way around
@@ -411,7 +411,7 @@ class Solver:
                 _solve_type_5(self.symo, coeffs, th, r)
                 self.unknown_th.remove(th)
                 self.unknown_r.remove(r)
-                print "TYPE 5"
+                #print "TYPE 5"
                 return True
         elif len(ths) == 2 and len(rs) == 0:
             th1, th2 = ths
@@ -420,14 +420,14 @@ class Solver:
                 _solve_type_6(self.symo, coeffs, th1, th2)
                 self.unknown_th.remove(th1)
                 self.unknown_th.remove(th2)
-                print "TYPE 6"
+                #print "TYPE 6"
                 return True
             coeffs = self.patt[7].match(eq1, eq2, th1=th1, th2=th2)
             if coeffs:
                 _solve_type_7(self.symo, coeffs, th1, th2)
                 self.unknown_th.remove(th1)
                 self.unknown_th.remove(th2)
-                print "TYPE 7"
+                #print "TYPE 7"
                 return True
             coeffs = self.patt[8].match(eq1, eq2, th1=th1, th2=th2)
             if not coeffs:  # try the other way around
@@ -439,7 +439,7 @@ class Solver:
                 _solve_type_8(self.symo, coeffs, th1, th2)
                 self.unknown_th.remove(th1)
                 self.unknown_th.remove(th2)
-                print "TYPE 8"
+                #print "TYPE 8"
                 return True
 
     def solve_mono(self, eq, ths, rs):
@@ -453,7 +453,7 @@ class Solver:
             if coeffs:
                 _solve_type_1(self.symo, coeffs, r)
                 self.unknown_r.remove(r)
-                print "TYPE 1"
+                #print "TYPE 1"
                 return True
         elif len(ths) == 1 and len(rs) == 0:
             th, = ths
@@ -461,7 +461,7 @@ class Solver:
             if coeffs:
                 _solve_type_2(self.symo, coeffs, th)
                 self.unknown_th.remove(th)
-                print "TYPE 2"
+                #print "TYPE 2"
                 return True
         return False
 

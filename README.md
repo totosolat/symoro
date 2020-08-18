@@ -33,13 +33,13 @@ Getting Started
   `sudo apt install python-setuptools`
   `sudo apt install python-pip`
   `sudo pip install sympy==0.7.6`
-  `sudo appt install python-dev`
+  `sudo apt install python-dev`
   `sudo pip install numpy==1.6.1`
   `sudo apt install python-wxgtk2.8 #(pythron-wxgtk3.0 also tested)`
-  `sudo pip install PyOpenGL==3.0.1b2straight away`
+  `sudo pip install PyOpenGL==3.0.1b2`
 
-  
-
++ For ubuntu 20.04, use python2-* instead of python-* and install pip with:
+  `sudo apt install curl && curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py && sudo python2 get-pip.py`
 
 Licence
 -------
